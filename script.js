@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const CART_KEY = "quantumBuildCart";
   let products = [];
 
-  const API_BASE_URL = "http://localhost:3000";
+  const API_BASE_URL = "";
 
   // DOM Elements
   const productsSection = document.getElementById("productsSection");
