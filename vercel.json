@@ -9,6 +9,26 @@
                     "data/**"
                 ]
             }
+        },
+        {
+            "src": "*.html",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "*.css",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "script.js",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "products.js",
+            "use": "@vercel/static"
+        },
+        {
+            "src": "images/**",
+            "use": "@vercel/static"
         }
     ],
     "routes": [
@@ -17,7 +37,8 @@
             "dest": "/server.js"
         },
         {
-            "handle": "filesystem"
+            "src": "/(.*)",
+            "dest": "/$1"
         }
     ]
 }
