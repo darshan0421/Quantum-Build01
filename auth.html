@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sign In - Quantum Build</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Auth Specific Styles */
+        body {
+            background: #fdfdfd;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-container {
+            display: flex;
+            width: 900px;
+            height: 600px;
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .auth-left {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-right {
+            flex: 1.2;
+            background: url('https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
+            position: relative;
+        }
+
+        .auth-right::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+        }
+
+        .auth-header {
+            margin-bottom: 30px;
+        }
+
+        .auth-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .auth-sub {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #ff7a00;
+        }
+
+        .auth-btn {
+            margin-top: 10px;
+            padding: 14px;
+            background: #111;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .auth-btn:hover {
+            background: #ff7a00;
+        }
+
+        .auth-toggle {
+            margin-top: 20px;
+            font-size: 13px;
+            text-align: center;
+        }
+
+        .auth-toggle a {
+            color: #ff7a00;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error-msg {
+            color: red;
+            font-size: 12px;
+            margin-bottom: 10px;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-container">
+        <div class="auth-left">
+
+            <!-- Sign In Form -->
+            <div id="signinForm">
+                <div class="auth-header">
+                    <h1 class="auth-title">Welcome back</h1>
+                    <p class="auth-sub">Enter your details to access your builds.</p>
+                </div>
+                <div class="error-msg" id="loginError">Invalid credentials</div>
+                <form class="auth-form" id="loginFormElement">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="name@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPass" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Sign In</button>
+                </form>
+                <div class="auth-toggle">
+                    Don't have an account? <a onclick="toggleAuth()">Create one</a>
+                </div>
+            </div>
+
+            <!-- Sign Up Form -->
+            <div id="signupForm" class="hidden">
+                <div class="auth-header">
+                    <h1 class="auth-title">Create Account</h1>
+                    <p class="auth-sub">Start building your dream PC today.</p>
+                </div>
+                <div class="error-msg" id="signupError">Error creating account</div>
+                <form class="auth-form" id="signupFormElement">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="signupEmail" placeholder="name@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPass" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="auth-btn">Create Account</button>
+                </form>
+                <div class="auth-toggle">
+                    Already have an account? <a onclick="toggleAuth()">Sign In</a>
+                </div>
+                <!DOCTYPE html>
+                <html lang="en">
+
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Sign In - Quantum Build</title>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="style.css">
+                    <style>
+                        /* Auth Specific Styles */
+                        body {
+                            background: #fdfdfd;
+                            height: 100vh;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                        .auth-container {
+                            display: flex;
+                            width: 900px;
+                            height: 600px;
+                            background: #fff;
+                            border-radius: 24px;
+                            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+                            overflow: hidden;
+                        }
+
+                        .auth-left {
+                            flex: 1;
+                            padding: 40px;
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                        }
+
+                        .auth-right {
+                            flex: 1.2;
+                            background: url('https://images.unsplash.com/photo-1587202372775-e229f172b9d7?q=80&w=1000&auto=format&fit=crop') center/cover no-repeat;
+                            position: relative;
+                        }
+
+                        .auth-right::after {
+                            content: "";
+                            position: absolute;
+                            inset: 0;
+                            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.6));
+                        }
+
+                        .auth-header {
+                            margin-bottom: 30px;
+                        }
+
+                        .auth-title {
+                            font-size: 28px;
+                            font-weight: 800;
+                            margin-bottom: 8px;
+                        }
+
+                        .auth-sub {
+                            color: #666;
+                            font-size: 14px;
+                        }
+
+                        .auth-form {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 16px;
+                        }
+
+                        .form-group label {
+                            display: block;
+                            font-size: 12px;
+                            font-weight: 600;
+                            margin-bottom: 6px;
+                            text-transform: uppercase;
+                        }
+
+                        .form-group input {
+                            width: 100%;
+                            padding: 12px;
+                            border: 1px solid #ddd;
+                            border-radius: 8px;
+                            font-size: 14px;
+                            outline: none;
+                        }
+
+                        .form-group input:focus {
+                            border-color: #ff7a00;
+                        }
+
+                        .auth-btn {
+                            margin-top: 10px;
+                            padding: 14px;
+                            background: #111;
+                            color: #fff;
+                            border: none;
+                            border-radius: 8px;
+                            font-weight: 700;
+                            cursor: pointer;
+                            transition: 0.2s;
+                        }
+
+                        .auth-btn:hover {
+                            background: #ff7a00;
+                        }
+
+                        .auth-toggle {
+                            margin-top: 20px;
+                            font-size: 13px;
+                            text-align: center;
+                        }
+
+                        .auth-toggle a {
+                            color: #ff7a00;
+                            font-weight: 600;
+                            cursor: pointer;
+                        }
+
+                        .hidden {
+                            display: none;
+                        }
+
+                        .error-msg {
+                            color: red;
+                            font-size: 12px;
+                            margin-bottom: 10px;
+                            display: none;
+                        }
+                    </style>
+                </head>
+
+                <body>
+
+                    <div class="auth-container">
+                        <div class="auth-left">
+
+                            <!-- Sign In Form -->
+                            <div id="signinForm">
+                                <div class="auth-header">
+                                    <h1 class="auth-title">Welcome back</h1>
+                                    <p class="auth-sub">Enter your details to access your builds.</p>
+                                </div>
+                                <div class="error-msg" id="loginError">Invalid credentials</div>
+                                <form class="auth-form" id="loginFormElement">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="loginEmail" placeholder="name@example.com" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input type="password" id="loginPass" placeholder="••••••••" required>
+                                    </div>
+                                    <button type="submit" class="auth-btn">Sign In</button>
+                                </form>
+                                <div class="auth-toggle">
+                                    Don't have an account? <a onclick="toggleAuth()">Create one</a>
+                                </div>
+                            </div>
+
+                            <!-- Sign Up Form -->
+                            <div id="signupForm" class="hidden">
+                                <div class="auth-header">
+                                    <h1 class="auth-title">Create Account</h1>
+                                    <p class="auth-sub">Start building your dream PC today.</p>
+                                </div>
+                                <div class="error-msg" id="signupError">Error creating account</div>
+                                <form class="auth-form" id="signupFormElement">
+                                    <div class="form-group">
+                                        <label>Full Name</label>
+                                        <input type="text" id="signupName" placeholder="John Doe" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="signupEmail" placeholder="name@example.com" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Password</label>
+                                        <input type="password" id="signupPass" placeholder="••••••••" required>
+                                    </div>
+                                    <button type="submit" class="auth-btn">Create Account</button>
+                                </form>
+                                <div class="auth-toggle">
+                                    Already have an account? <a onclick="toggleAuth()">Sign In</a>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="auth-right"></div>
+                    </div>
+
+                    <script>
+                        const API_BASE_URL = "http://localhost:3000";
+
+                        function toggleAuth() {
+                            document.getElementById('signinForm').classList.toggle('hidden');
+                            document.getElementById('signupForm').classList.toggle('hidden');
+                            document.querySelectorAll('.error-msg').forEach(el => el.style.display = 'none');
+                        }
+
+                        // Login Handler
+                        document.getElementById('loginFormElement').addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const email = document.getElementById('loginEmail').value;
+                            const password = document.getElementById('loginPass').value;
+                            const errorEl = document.getElementById('loginError');
+
+                            try {
+                                const res = await fetch(`${API_BASE_URL}/api/login`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ email, password })
+                                });
+
+                                if (res.ok) {
+                                    const data = await res.json();
+                                    alert(`Welcome back, ${data.user.name}!`);
+                                    window.location.href = 'index.html';
+                                } else {
+                                    errorEl.textContent = "Invalid email or password";
+                                    errorEl.style.display = 'block';
+                                }
+                            } catch (err) {
+                                errorEl.textContent = "Server error. Please try again.";
+                                errorEl.style.display = 'block';
+                            }
+                        });
+
+                        // Signup Handler
+                        document.getElementById('signupFormElement').addEventListener('submit', async (e) => {
+                            e.preventDefault();
+                            const name = document.getElementById('signupName').value;
+                            const email = document.getElementById('signupEmail').value;
+                            const password = document.getElementById('signupPass').value;
+                            const errorEl = document.getElementById('signupError');
+
+                            try {
+                                const res = await fetch(`${API_BASE_URL}/api/signup`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ name, email, password })
+                                });
+
+                                if (res.ok) {
+                                    alert("Account created! Please sign in.");
+                                    toggleAuth();
+                                } else {
+                                    const data = await res.json();
+                                    errorEl.textContent = data.error || "Failed to create account";
+                                    errorEl.style.display = 'block';
+                                }
+                            } catch (err) {
+                                errorEl.textContent = "Server error. Please try again.";
+                                errorEl.style.display = 'block';
+                            }
+                        });
+                    </script>
+                </body>
+
+                </html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Quantum Build - PC Hardware Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- NAVBAR -->
+    <header>
+      <div class="nav">
+        <div class="nav-left">
+          <div class="logo-badge">Q</div>
+          <div class="brand">
+            <div class="brand-title">Quantum Build</div>
+            <div class="brand-sub">Custom PC Hardware Store</div>
+          </div>
+        </div>
+
+        <div class="nav-links">
+          <button class="nav-link active" data-target="home" type="button">Home</button>
+          <button class="nav-link" data-target="components" type="button">Components</button>
+          <button class="nav-link" data-target="deals" type="button">Deals</button>
+          <button class="nav-link" data-target="support" type="button">Support</button>
+          <div class="pill">
+            <span class="pill-dot"></span>
+            Ships all over India
+          </div>
+        </div>
+
+        <div class="nav-right">
+          <button class="nav-cta" type="button" id="aiBuilderBtn">
+            <span class="icon">⚡</span>
+            AI Builder
+          </button>
+          <button class="cart-btn" id="cartButton" type="button" title="Cart">
+            <div class="cart-icon"></div>
+            <div class="cart-badge" id="cartCount">0</div>
+          </button>
+          <a href="auth.html" class="nav-link" style="font-weight: 600;">Sign In</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- HERO (Home section) -->
+      <section class="hero" id="homeSection">
+        <div class="hero-left">
+          <div class="hero-pill">
+            <span class="hero-pill-dot"></span>
+            Fresh builds. Indian prices.
+          </div>
+          <h1 class="hero-title">
+            Power up your <span class="highlight">next PC</span> with premium parts from
+            <span class="highlight">Quantum Build</span>.
+          </h1>
+          <p class="hero-subtitle">
+            Pick every component yourself — CPUs, GPUs, RAM, SSDs, cabinets, and more.
+            All curated for Indian gamers, creators, and students with transparent pricing.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-primary" type="button" id="scrollToProducts">
+              Browse all components
+              <span class="icon">↓</span>
+            </button>
+            <button class="btn-ghost" type="button" id="heroAiBtn">
+              <span>Ask AI for a Build</span> <span>→</span>
+            </button>
+          </div>
+          <div class="hero-meta">
+            <div class="hero-meta-item">
+              <div class="hero-meta-label">Delivery</div>
+              <div class="hero-meta-value">Pan-India shipping</div>
+            </div>
+            <div class="hero-meta-item">
+              <div class="hero-meta-label">Warranty</div>
+              <div class="hero-meta-value">Brand official warranty</div>
+            </div>
+            <div class="hero-meta-item">
+              <div class="hero-meta-label">Best for</div>
+              <div class="hero-meta-value">Gaming • Editing • Study</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-right">
+          <div class="hero-card">
+            <div class="hero-card-top">
+              <div class="hero-card-tag">Starter Gaming Build</div>
+              <div style="font-size:11px;color:#444;">1080p high FPS</div>
+            </div>
+            <div class="hero-card-body">
+              <div class="hero-pc">
+                <div class="hero-pc-inner">
+                  <div class="hero-pc-glass">
+                    <div class="hero-pc-bars">
+                      <div class="hero-pc-bar"></div>
+                      <div class="hero-pc-bar"></div>
+                      <div class="hero-pc-bar"></div>
+                      <div class="hero-pc-bar"></div>
+                    </div>
+                  </div>
+                  <div class="hero-pc-specs">
+                    <h4>Key Components</h4>
+                    <ul class="hero-pc-specs-list">
+                      <li>
+                        <span class="hero-pc-specs-label">CPU</span>
+                        <span class="hero-pc-specs-value">Intel i5 12400F</span>
+                      </li>
+                      <li>
+                        <span class="hero-pc-specs-label">GPU</span>
+                        <span class="hero-pc-specs-value">RTX 4060 8GB</span>
+                      </li>
+                      <li>
+                        <span class="hero-pc-specs-label">RAM</span>
+                        <span class="hero-pc-specs-value">16GB DDR4 3200MHz</span>
+                      </li>
+                      <li>
+                        <span class="hero-pc-specs-label">Storage</span>
+                        <span class="hero-pc-specs-value">1TB NVMe SSD</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="hero-pc-lights"></div>
+              </div>
+            </div>
+            <div class="hero-card-footer">
+              <div class="hero-price">
+                <span class="hero-price-main">₹79,999*</span>
+                <span class="hero-price-sub">Approx full build value</span>
+              </div>
+              <div class="hero-tagline">
+                Optimised for esports, streaming & everyday multitasking.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- AI BUILDER SECTION (Hidden by default, toggled via JS) -->
+      <section class="ai-section" id="aiSection" style="display: none;">
+        <div class="ai-container">
+          <div class="ai-header">
+            <h2 class="ai-title">AI PC Builder Assistant</h2>
+            <p class="ai-subtitle">Tell us your needs, and our AI will recommend the perfect parts for your budget.</p>
+          </div>
+
+          <div class="ai-form">
+            <div class="ai-input-group">
+              <label>What is your primary usage?</label>
+              <div class="ai-chips">
+                <button class="ai-chip active" data-usage="gaming">Gaming</button>
+                <button class="ai-chip" data-usage="editing">Video Editing</button>
+                <button class="ai-chip" data-usage="office">Office / Study</button>
+              </div>
+            </div>
+
+            <div class="ai-input-group">
+              <label>What is your budget? (₹<span id="budgetDisplay">50000</span>)</label>
+              <input type="range" id="budgetRange" min="30000" max="200000" step="5000" value="50000" class="ai-slider">
+              <div class="ai-range-labels">
+                <span>₹30k</span>
+                <span>₹2L+</span>
+              </div>
+            </div>
+
+            <button class="ai-btn" id="generateBuildBtn">Generate Build</button>
+          </div>
+
+          <div class="ai-results" id="aiResults" style="display: none;">
+            <h3>Recommended Build</h3>
+            <div class="ai-build-list" id="aiBuildList">
+              <!-- AI suggested items will go here -->
+            </div>
+            <div class="ai-total">
+              <span>Total Estimate:</span>
+              <span id="aiTotalCost">₹0</span>
+            </div>
+            <button class="ai-add-all-btn" id="addAllToCartBtn">Add All to Cart</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOLBAR -->
+      <section class="toolbar">
+        <div class="toolbar-left">
+          <h2 class="toolbar-title">PC Hardware Components</h2>
+          <p class="toolbar-sub">
+            Explore CPUs, GPUs, motherboards, RAM, storage, power supplies,
+            cabinets, monitors and more — with Indian pricing and short usage notes.
+          </p>
+        </div>
+        <div class="toolbar-right">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search part (e.g. RTX 4060, SSD, cabinet)">
+            <span class="search-clear" id="searchClear">✕</span>
+          </div>
+          <select id="sortSelect" class="sort-select">
+            <option value="default">Sort: Recommended</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="name-asc">Name: A to Z</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- FILTER CHIPS -->
+      <section class="filter-chips">
+        <button class="filter-chip active" data-category="all" type="button">
+          <span class="filter-chip-dot"></span> All parts
+        </button>
+        <button class="filter-chip" data-category="cpu" type="button">
+          <span class="filter-chip-dot"></span> CPU
+        </button>
+        <button class="filter-chip" data-category="gpu" type="button">
+          <span class="filter-chip-dot"></span> Graphics cards
+        </button>
+        <button class="filter-chip" data-category="motherboard" type="button">
+          <span class="filter-chip-dot"></span> Motherboards
+        </button>
+        <button class="filter-chip" data-category="ram" type="button">
+          <span class="filter-chip-dot"></span> RAM
+        </button>
+        <button class="filter-chip" data-category="storage" type="button">
+          <span class="filter-chip-dot"></span> Storage
+        </button>
+        <button class="filter-chip" data-category="psu" type="button">
+          <span class="filter-chip-dot"></span> Power supplies
+        </button>
+        <button class="filter-chip" data-category="cabinet" type="button">
+          <span class="filter-chip-dot"></span> Cabinets
+        </button>
+        <button class="filter-chip" data-category="peripheral" type="button">
+          <span class="filter-chip-dot"></span> Monitors & peripherals
+        </button>
+        <button class="filter-chip" data-category="cooling" type="button">
+          <span class="filter-chip-dot"></span> Cooling & accessories
+        </button>
+      </section>
+
+      <!-- PRODUCTS GRID (Components section) -->
+      <section class="products-section" id="productsSection">
+        <div class="products-grid" id="productList">
+          <!-- Products will be injected here by JS -->
+        </div>
+      </section>
+
+      <!-- Deals section (for nav) -->
+      <section id="dealsSection" class="info-section">
+        <h2>Deals & Offers</h2>
+        <p>
+          Coming soon: combo offers on CPU + GPU, student discounts, and festival sales.
+          Stay tuned for limited-time Quantum Build deals tailored for Indian PC builders.
+        </p>
+      </section>
+
+      <!-- Support section (for nav) -->
+      <section id="supportSection" class="info-section">
+        <h2>Support & Help</h2>
+        <p>
+          Need build guidance or help choosing parts? Email us at
+          <strong>support@quantumbuild.in</strong> or reach us on WhatsApp for quick assistance.
+          We can suggest full PC builds, compatibility checks, and upgrade paths for your budget.
+        </p>
+      </section>
+
+      <!-- Build summary bar -->
+      <div class="build-summary-bar">
+        <div class="build-summary-inner">
+          <div class="build-summary-card" id="buildSummaryBar">
+            <div class="build-summary-main">
+              <div class="build-summary-label">Build summary</div>
+              <div class="build-summary-values">
+                <div class="build-summary-count" id="buildSummaryCount">0 items selected</div>
+                <div class="build-summary-total" id="buildSummaryTotal">₹0</div>
+                <div class="build-summary-pill">Approximate total for selected parts</div>
+              </div>
+            </div>
+            <div class="build-summary-actions">
+              <button class="build-summary-btn build-summary-btn-secondary" type="button" id="buildSummaryClear">
+                Clear
+              </button>
+              <button class="build-summary-btn build-summary-btn-primary" type="button" id="buildSummaryView">
+                View cart →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- PRODUCT DETAILS MODAL -->
+    <div class="modal-backdrop" id="productModal">
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">✕</button>
+        <div class="modal-body">
+          <div class="modal-image-wrap">
+            <img src="" alt="Product Image" id="modalImage" class="modal-image">
+          </div>
+          <div class="modal-details">
+            <div class="modal-badge" id="modalBadge">Badge</div>
+            <h2 class="modal-title" id="modalTitle">Product Title</h2>
+            <div class="modal-price" id="modalPrice">₹0</div>
+            <div class="modal-specs">
+              <h3>Specifications</h3>
+              <p id="modalSpecs">Specs go here...</p>
+            </div>
+            <div class="modal-desc">
+              <h3>Description</h3>
+              <p id="modalDesc">Description goes here...</p>
+            </div>
+            <div class="modal-usage">
+              <h3>Best For</h3>
+              <p id="modalUsage">Usage info...</p>
+            </div>
+            <button class="modal-add-btn" id="modalAddBtn">Add to Cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <div class="footer-inner">
+        <div class="footer-brand">© Quantum Build – PC hardware, your way.</div>
+        <div class="footer-note">
+          *Prices are sample Indian MRPs for demo. For real store, connect APIs or update data regularly.
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="products.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>

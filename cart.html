@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Quantum Build - Cart</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #ff7a00;
+      --primary-dark: #e66800;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      background: #0d0d0d;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .cart-page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .cart-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+
+    .back-link {
+      font-size: 13px;
+      color: #ffffff;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .back-link:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .cart-box {
+      border-radius: 18px;
+      background: #141414;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 16px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    }
+
+    .empty-text {
+      font-size: 14px;
+      color: #bbbbbb;
+      margin-bottom: 10px;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #888888;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    th,
+    td {
+      padding: 8px 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      text-align: left;
+    }
+
+    th {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #aaaaaa;
+    }
+
+    .cart-item-name {
+      font-weight: 600;
+    }
+
+    .cart-item-meta {
+      font-size: 11px;
+      color: #aaaaaa;
+    }
+
+    .qty {
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .price,
+    .total {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .actions {
+      text-align: center;
+      width: 70px;
+    }
+
+    .cart-footer {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cart-total-text {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .cart-total-amount {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    .cart-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #ffb54b 100%);
+      color: #111111;
+      border: none;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .muted {
+      color: #888888;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .qty-controls {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .qty-btn {
+      background: transparent;
+      color: #ffffff;
+      border: none;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    .qty-value {
+      min-width: 26px;
+      text-align: center;
+      font-size: 13px;
+      padding: 0 4px;
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .qty-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .remove-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 999px;
+      color: #ff7675;
+      cursor: pointer;
+      font-size: 11px;
+      padding: 3px 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .remove-btn:hover {
+      background: rgba(255, 118, 117, 0.15);
+      border-color: rgba(255, 118, 117, 0.7);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="cart-page">
+    <div class="cart-header">
+      <div class="cart-title">Cart</div>
+      <a href="index.html" class="back-link">← Back to Quantum Build</a>
+    </div>
+
+    <div class="cart-box">
+      <div id="cartEmptyState" style="display:none;">
+        <p class="empty-text">
+          Your cart is empty right now.
+        </p>
+        <p class="note">
+          Go back to Quantum Build, add some PC parts and they will appear here automatically.
+        </p>
+      </div>
+
+      <div id="cartContent" style="display:none;">
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th class="qty">Qty</th>
+              <th class="price">Price</th>
+              <th class="total">Total</th>
+              <th class="actions">Remove</th>
+            </tr>
+          </thead>
+          <tbody id="cartBody"></tbody>
+        </table>
+
+        <div class="cart-footer">
+          <div>
+            <div class="cart-total-text">Cart total</div>
+            <div class="cart-total-amount" id="cartTotal">₹0</div>
+            <div class="muted" id="cartItemsCountText"></div>
+          </div>
+          <div class="cart-actions">
+            <button class="btn btn-outline" id="clearCartBtn" type="button">Clear cart</button>
+            <button class="btn btn-primary" type="button">Checkout (demo)</button>
+          </div>
+          
+          </style>
+          </head>
+
+          <body>
+           
+
+              <div class="cart-box">
+                <div id="cartEmptyState" style="display:none;">
+                  <p class="empty-text">
+                    Your cart is empty right now.
+                  </p>
+                  <p class="note">
+                    Go back to Quantum Build, add some PC parts and they will appear here automatically.
+                  </p>
+                </div>
+
+                <div id="cartContent" style="display:none;">
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>Item</th>
+                        <th class="qty">Qty</th>
+                        <th class="price">Price</th>
+                        <th class="total">Total</th>
+                        <th class="actions">Remove</th>
+                      </tr>
+                    </thead>
+                    <tbody id="cartBody"></tbody>
+                  </table>
+
+                  <div class="cart-footer">
+                    <div>
+                      <div class="cart-total-text">Cart total</div>
+                      <div class="cart-total-amount" id="cartTotal">₹0</div>
+                      <div class="muted" id="cartItemsCountText"></div>
+                    </div>
+                    <div class="cart-actions">
+                      <button class="btn btn-outline" id="clearCartBtn" type="button">Clear cart</button>
+                      <button class="btn btn-primary" type="button">Checkout (demo)</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Checkout Modal -->
+            <div id="checkoutModal" class="modal-backdrop">
+              <div class="modal-content checkout-modal">
+                <div class="modal-header">
+                  <h2 class="modal-title">Checkout</h2>
+                  <button class="modal-close" id="checkoutClose">×</button>
+                </div>
+                <div class="modal-body">
+                  <form id="checkoutForm">
+                    <div class="form-group">
+                      <label>Full Name</label>
+                      <input type="text" id="cxName" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                      <label>Email</label>
+                      <input type="email" id="cxEmail" required placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                      <label>Shipping Address</label>
+                      <textarea id="cxAddress" rows="3" required placeholder="123 Gaming Street, Tech City"></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label>Payment Method</label>
+                      <select id="cxPayment">
+                        <option value="cod">Cash on Delivery</option>
+                        <option value="upi">UPI (GPay/PhonePe)</option>
+                        <option value="card">Credit/Debit Card</option>
+                      </select>
+                    </div>
+
+                    <div class="order-summary">
+                      <div class="summary-row">
+                        <span>Total Amount</span>
+                        <span id="cxTotalAmount" class="highlight">₹0</span>
+                      </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary full-width">Pay & Place Order</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+            <style>
+              /* Modal Styles (Reused/Adapted) */
+              .modal-backdrop {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(8px);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+              }
+
+              .modal-backdrop.active {
+                display: flex;
+                opacity: 1;
+              }
+
+              .modal-content {
+                background: #1a1a1a;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 24px;
+                width: 90%;
+                max-width: 500px;
+                padding: 24px;
+                position: relative;
+                transform: translateY(20px);
+                transition: transform 0.3s ease;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+              }
+
+              .modal-backdrop.active .modal-content {
+                transform: translateY(0);
+              }
+
+              .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+              }
+
+              .modal-title {
+                font-size: 20px;
+                font-weight: 700;
+                color: #fff;
+              }
+
+              .modal-close {
+                background: none;
+                border: none;
+                color: #888;
+                font-size: 28px;
+                cursor: pointer;
+              }
+
+              .form-group {
+                margin-bottom: 16px;
+              }
+
+              .form-group label {
+                display: block;
+                font-size: 12px;
+                color: #aaa;
+                margin-bottom: 6px;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+              }
+
+              .form-group input,
+              .form-group textarea,
+              .form-group select {
+                width: 100%;
+                background: #0d0d0d;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 10px 12px;
+                color: #fff;
+                font-family: inherit;
+                font-size: 14px;
+                box-sizing: border-box;
+                /* Fix padding issue */
+              }
+
+              .form-group input:focus,
+              .form-group textarea:focus,
+              .form-group select:focus {
+                outline: none;
+                border-color: var(--primary);
+              }
+
+              .order-summary {
+                background: rgba(255, 255, 255, 0.03);
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+              }
+
+              .summary-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+              }
+
+              .highlight {
+                color: var(--primary);
+                font-weight: 700;
+                font-size: 16px;
+              }
+
+              .full-width {
+                width: 100%;
+                padding: 12px;
+                font-size: 14px;
+              }
+            </style>
+
+            <script>
+              document.addEventListener("DOMContentLoaded", function () {
+                const CART_KEY = "quantumBuildCart";
+
+                const cartEmptyState = document.getElementById("cartEmptyState");
+                const cartContent = document.getElementById("cartContent");
+                const cartBody = document.getElementById("cartBody");
+                const cartTotalEl = document.getElementById("cartTotal");
+                const cartItemsCountText = document.getElementById("cartItemsCountText");
+                const clearCartBtn = document.getElementById("clearCartBtn");
+                const checkoutBtn = document.querySelector(".btn-primary"); // The checkout button
+
+                // Modal Elements
+                const checkoutModal = document.getElementById("checkoutModal");
+                const checkoutClose = document.getElementById("checkoutClose");
+                const checkoutForm = document.getElementById("checkoutForm");
+                const cxTotalAmount = document.getElementById("cxTotalAmount");
+
+                // Form Inputs
+                const cxName = document.getElementById("cxName");
+                const cxEmail = document.getElementById("cxEmail");
+
+                function loadCart() {
+                  try {
+                    const raw = localStorage.getItem(CART_KEY);
+                    if (!raw) return [];
+                    const parsed = JSON.parse(raw);
+                    return Array.isArray(parsed) ? parsed : [];
+                  } catch (e) {
+                    console.warn("Error reading cart from localStorage", e);
+                    return [];
+                  }
+                }
+
+                function saveCart(cart) {
+                  try {
+                    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+                  } catch (e) {
+                    console.warn("Error saving cart to localStorage", e);
+                  }
+                }
+
+                function formatPrice(amount) {
+                  return "₹" + amount.toLocaleString("en-IN");
+                }
+
+                function renderCart() {
+                  const cart = loadCart();
+
+                  if (!cart.length) {
+                    cartEmptyState.style.display = "block";
+                    cartContent.style.display = "none";
+                    return;
+                  }
+
+                  cartEmptyState.style.display = "none";
+                  cartContent.style.display = "block";
+
+                  cartBody.innerHTML = "";
+                  let total = 0;
+                  let itemCount = 0;
+
+                  cart.forEach((item, index) => {
+                    const qty = item.qty || 1;
+                    const lineTotal = (item.price || 0) * qty;
+                    total += lineTotal;
+                    itemCount += qty;
+
+                    const tr = document.createElement("tr");
+
+                    // NAME CELL
+                    const nameTd = document.createElement("td");
+                    const nameDiv = document.createElement("div");
+                    nameDiv.className = "cart-item-name";
+                    nameDiv.textContent = item.name || "Item";
+
+                    const metaDiv = document.createElement("div");
+                    metaDiv.className = "cart-item-meta";
+                    metaDiv.textContent = item.category ? item.category.toUpperCase() : "";
+
+                    nameTd.appendChild(nameDiv);
+                    if (metaDiv.textContent) {
+                      nameTd.appendChild(metaDiv);
+                    }
+
+                    // QTY CELL with +/- buttons
+                    const qtyTd = document.createElement("td");
+                    qtyTd.className = "qty";
+
+                    const qtyControls = document.createElement("div");
+                    qtyControls.className = "qty-controls";
+
+                    const minusBtn = document.createElement("button");
+                    minusBtn.className = "qty-btn";
+                    minusBtn.textContent = "−";
+
+                    const qtyValue = document.createElement("div");
+                    qtyValue.className = "qty-value";
+                    qtyValue.textContent = qty;
+
+                    const plusBtn = document.createElement("button");
+                    plusBtn.className = "qty-btn";
+                    plusBtn.textContent = "+";
+
+                    qtyControls.appendChild(minusBtn);
+                    qtyControls.appendChild(qtyValue);
+                    qtyControls.appendChild(plusBtn);
+                    qtyTd.appendChild(qtyControls);
+
+                    // PRICE CELL
+                    const priceTd = document.createElement("td");
+                    priceTd.className = "price";
+                    priceTd.textContent = formatPrice(item.price || 0);
+
+                    // LINE TOTAL CELL
+                    const totalTd = document.createElement("td");
+                    totalTd.className = "total";
+                    totalTd.textContent = formatPrice(lineTotal);
+
+                    // REMOVE CELL
+                    const actionsTd = document.createElement("td");
+                    actionsTd.className = "actions";
+                    const removeBtn = document.createElement("button");
+                    removeBtn.className = "remove-btn";
+                    removeBtn.textContent = "Remove";
+                    actionsTd.appendChild(removeBtn);
+
+                    // Append all tds
+                    tr.appendChild(nameTd);
+                    tr.appendChild(qtyTd);
+                    tr.appendChild(priceTd);
+                    tr.appendChild(totalTd);
+                    tr.appendChild(actionsTd);
+
+                    // --- Event handlers ---
+                    plusBtn.addEventListener("click", () => {
+                      const currentCart = loadCart();
+                      if (!currentCart[index]) return;
+                      currentCart[index].qty = (currentCart[index].qty || 1) + 1;
+                      saveCart(currentCart);
+                      renderCart();
+                    });
+
+                    minusBtn.addEventListener("click", () => {
+                      const currentCart = loadCart();
+                      if (!currentCart[index]) return;
+                      const currentQty = currentCart[index].qty || 1;
+                      if (currentQty > 1) {
+                        currentCart[index].qty = currentQty - 1;
+                      } else {
+                        // If qty is 1 and user presses -, remove the item
+                        currentCart.splice(index, 1);
+                      }
+                      saveCart(currentCart);
+                      renderCart();
+                    });
+
+                    removeBtn.addEventListener("click", () => {
+                      const currentCart = loadCart();
+                      if (!currentCart[index]) return;
+                      currentCart.splice(index, 1);
+                      saveCart(currentCart);
+                      renderCart();
+                    });
+
+                    cartBody.appendChild(tr);
+                  });
+
+                  cartTotalEl.textContent = formatPrice(total);
+                  cartItemsCountText.textContent =
+                    itemCount + " item" + (itemCount !== 1 ? "s" : "") + " in cart";
+                }
+
+                // Clear cart button
+                if (clearCartBtn) {
+                  clearCartBtn.addEventListener("click", () => {
+                    if (confirm("Clear all items from cart?")) {
+                      saveCart([]);
+                      renderCart();
+                    }
+                  });
+                }
+
+                /* ---------- Checkout Logic ---------- */
+
+                checkoutBtn.addEventListener("click", () => {
+                  const cart = loadCart();
+                  if (cart.length === 0) return;
+
+                  // Calculate total
+                  const total = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+                  cxTotalAmount.textContent = formatPrice(total);
+
+                  // Pre-fill if user logged in (simulated)
+                  // In a real app, we'd check session/token
+
+                  checkoutModal.classList.add("active");
+                });
+
+                checkoutClose.addEventListener("click", () => {
+                  checkoutModal.classList.remove("active");
+                });
+
+                checkoutModal.addEventListener("click", (e) => {
+                  if (e.target === checkoutModal) checkoutModal.classList.remove("active");
+                });
+
+                checkoutForm.addEventListener("submit", async (e) => {
+                  e.preventDefault();
+
+                  const cart = loadCart();
+                  const total = cart.reduce((sum, item) => sum + (item.price * (item.qty || 1)), 0);
+
+                  const orderData = {
+                    user: {
+                      name: cxName.value,
+                      email: cxEmail.value
+                    },
+                    address: document.getElementById("cxAddress").value,
+                    paymentMethod: document.getElementById("cxPayment").value,
+                    items: cart,
+                    total: total
+                  };
+
+                  try {
+                    const res = await fetch('/api/orders', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify(orderData)
+                    });
+
+                    if (!res.ok) throw new Error("Order failed");
+
+                    const data = await res.json();
+
+                    // Success
+                    alert(`Order Placed Successfully! Order ID: ${data.orderId}`);
+                    saveCart([]); // Clear cart
+                    renderCart();
+                    checkoutModal.classList.remove("active");
+
+                  } catch (err) {
+                    console.error(err);
+                    alert("Failed to place order. Please try again.");
+                  }
+                });
+
+                // Initial render
+                renderCart();
+              });
+            </script>
+
+          </body>
+
+</html>

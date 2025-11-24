@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Quantum Build – Admin Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --primary: #ff7a00;
+      --primary-dark: #e66800;
+      --bg: #f5f5f5;
+      --bg-soft: #fff7ee;
+      --text: #111111;
+      --muted: #6b6b6b;
+
+      --shadow-soft: 0 6px 16px rgba(0, 0, 0, 0.18);
+      --shadow-medium: 0 10px 24px rgba(0, 0, 0, 0.22);
+      --shadow-strong: 0 16px 40px rgba(0, 0, 0, 0.30);
+      --radius-lg: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    /* Layout wrapper */
+
+    .dashboard {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      background: radial-gradient(circle at top left, #fff6eb 0, #ffffff 45%, #f4f4f4 100%);
+    }
+
+    /* Sidebar */
+
+    .sidebar {
+      background: #111111;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 14px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .sidebar-logo {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, #ffb54b 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .sidebar-title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-title-main {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-title-sub {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .sidebar-nav {
+      margin-top: 12px;
+      flex: 1;
+    }
+
+    .sidebar-section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      opacity: 0.55;
+      margin: 10px 6px 4px;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background 0.15s ease-out, transform 0.15s ease-out, border-color 0.15s ease-out;
+      color: #f5f5f5;
+      margin-bottom: 4px;
+    }
+
+    .sidebar-link-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+    }
+
+    .sidebar-link span.label {
+      flex: 1;
+    }
+
+    .sidebar-link span.chip {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .sidebar-link.active,
+    .sidebar-link:hover {
+      background: rgba(255, 122, 0, 0.18);
+      border-color: rgba(255, 122, 0, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 8px;
+      margin-top: 8px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    .sidebar-footer small {
+      display: block;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    /* Top bar */
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.9);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .topbar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 18px;
+    }
+
+    .topbar-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .topbar-title {
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .topbar-sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-pill {
+      font-size: 11px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #111111;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .topbar-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #4cd137;
+      box-shadow: 0 0 0 3px rgba(76, 209, 55, 0.4);
+    }
+
+    .topbar-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      background: #ffffff;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .topbar-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #333333, #000000);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .topbar-user-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .topbar-user-name {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .topbar-user-role {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* Main content */
+
+    .content {
+      padding: 18px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Metric cards */
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .metric-card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 12px 14px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .metric-value {
+      font-size: 20px;
+      font-weight: 800;
+    }
+
+    .metric-change {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(40, 180, 99, 0.08);
+      color: #2ecc71;
+    }
+
+    .metric-change.down {
+      background: rgba(231, 76, 60, 0.08);
+      color: #e74c3c;
+    }
+
+    .metric-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .metric-icon-badge {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      background: var(--bg-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    /* Two-column layout: chart + table */
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1.3fr);
+      gap: 14px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      box-shadow: var(--shadow-soft);
+      border: 1px solid rgba(0, 0, 0, 0.02);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .card-sub {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .card-tag {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 122, 0, 0.08);
+      color: var(--primary-dark);
+    }
+
+    /* Fake bar chart */
+
+    .chart {
+      margin-top: 6px;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 10px;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+
+    .chart-legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--primary);
+    }
+
+    .legend-dot.secondary {
+      background: #333333;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      height: 140px;
+      padding-top: 6px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      border-radius: 12px 12px 4px 4px;
+      background: linear-gradient(180deg, var(--primary) 0%, #ffb54b 70%, #cc6a00 100%);
+      position: relative;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column-reverse;
+      overflow: hidden;
+    }
+
+    .chart-bar.dark {
+      background: linear-gradient(180deg, #333333 0%, #111111 100%);
+    }
+
+    .chart-bar-label {
+      font-size: 11px;
+      text-align: center;
+      margin-top: 4px;
+      color: var(--muted);
+    }
+
+    .chart-bar-inner {
+      width: 100%;
+    }
+
+    .chart-bar-value {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      font-size: 10px;
+      color: #ffffff;
+      opacity: 0.9;
+    }
+
+    /* Orders table */
+
+    .table-wrapper {
+      margin-top: 8px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      padding: 6px 6px;
+      text-align: left;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+      white-space: nowrap;
+    }
+
+    th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      background: #fafafa;
+    }
+
+    .status-pill {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-pill.completed {
+      background: rgba(40, 180, 99, 0.1);
+      color: #2ecc71;
+    }
+
+    .status-pill.pending {
+      background: rgba(255, 122, 0, 0.12);
+      color: var(--primary-dark);
+    }
+
+    .status-pill.failed {
+      background: rgba(231, 76, 60, 0.12);
+      color: #e74c3c;
+    }
+
+    /* Inventory list */
+
+    .inventory-list {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .inventory-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.06);
+    }
+
+    .inventory-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .inventory-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .inventory-meta {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .inventory-stock {
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .inventory-stock.low {
+      color: #e74c3c;
+    }
+
+    .inventory-stock.ok {
+      color: #2ecc71;
+    }
+
+    .inventory-stock.medium {
+      color: var(--primary-dark);
+    }
+
+    .inventory-badge {
+      font-size: 10px;
+      padding: 3px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Footer */
+
+    .admin-footer {
+      padding: 10px 18px 16px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Responsive: shrink sidebar */
+
+    .sidebar-toggle {
+      display: none;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard {
+        grid-template-columns: 64px minmax(0, 1fr);
+      }
+
+      .sidebar {
+        padding-inline: 8px;
+      }
+
+      .sidebar-header-text {
+        display: none;
+      }
+
+      .sidebar-section-label {
+        display: none;
+      }
+
+      .sidebar-link span.label,
+      .sidebar-link span.chip {
+        display: none;
+      }
+
+      .sidebar-footer {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 0.2s ease-out;
+        z-index: 30;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .topbar-inner {
+        padding-inline: 12px;
+      }
+
+      .sidebar-toggle {
+        display: inline-flex;
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        align-items: center;
+        justify-content: center;
+        background: #ffffff;
+        margin-right: 6px;
+        cursor: pointer;
+      }
+
+      .topbar-title-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .grid-two {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="dashboard">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">Q</div>
+        <div class="sidebar-header-text">
+          <div class="sidebar-title">
+            <div class="sidebar-title-main">Quantum Build</div>
+            <div class="sidebar-title-sub">Admin Console</div>
+          </div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Main</div>
+        <div class="sidebar-link active">
+          <div class="sidebar-link-icon">📊</div>
+          <span class="label">Overview</span>
+          <span class="chip">Today</span>
+        </div>
+        <div class="sidebar-link">
+          <div class="sidebar-link-icon">🧾</div>
+          <span class="label">Orders</span>
+        </div>
+        <div class="sidebar-link">
+          <div class="sidebar-link-icon">🧩</div>
+          <span class="label">Products</span>
+        </div>
+        <div class="sidebar-link">
+          <div class="sidebar-link-icon">👥</div>
+          <span class="label">Customers</span>
+        </div>
+
+        <div class="sidebar-section-label">System</div>
+        <div class="sidebar-link">
+          <div class="sidebar-link-icon">⚙️</div>
+          <span class="label">Settings</span>
+        </div>
+        <div class="sidebar-link">
+          <div class="sidebar-link-icon">📦</div>
+          <span class="label">Inventory</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        Quantum Build Admin
+        <small>Monitor orders, revenue, stock & user activity in one place.</small>
+      </div>
+    </aside>
+
+    <!-- MAIN PANEL -->
+    <div class="main">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-inner">
+          <div class="topbar-left">
+            <div class="topbar-title-row">
+              <!-- <button class="sidebar-toggle" id="sidebarToggle" title="Toggle menu">
+                ☰
+              </button>
+              <div class="topbar-title">Dashboard</div>
+            </div>
+            <div class="topbar-sub">
+              Today’s summary of <strong>Quantum Build</strong> store performance.
+            </div>
+          </div>
+          <div class="topbar-right">
+            <div class="topbar-pill">
+              <span class="topbar-pill-dot"></span>
+              Live store · Sample data
+            </div>
+            <div class="topbar-user">
+              <div class="topbar-avatar">A</div>
+              <div class="topbar-user-info">
+                <div class="topbar-user-name">Admin</div>
+                <div class="topbar-user-role">Store Manager</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      </style>
+      </head>
+
+      <body>
+
+        <div class="dashboard"> -->
+              <!-- SIDEBAR
+          <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+              <div class="sidebar-logo">Q</div>
+              <div class="sidebar-header-text">
+                <div class="sidebar-title">
+                  <div class="sidebar-title-main">Quantum Build</div>
+                  <div class="sidebar-title-sub">Admin Console</div>
+                </div>
+              </div>
+            </div>
+
+            <nav class="sidebar-nav">
+              <div class="sidebar-section-label">Main</div>
+              <div class="sidebar-link active">
+                <div class="sidebar-link-icon">📊</div>
+                <span class="label">Overview</span>
+                <span class="chip">Today</span>
+              </div>
+              <div class="sidebar-link">
+                <div class="sidebar-link-icon">🧾</div>
+                <span class="label">Orders</span>
+              </div>
+              <div class="sidebar-link">
+                <div class="sidebar-link-icon">🧩</div>
+                <span class="label">Products</span>
+              </div>
+              <div class="sidebar-link">
+                <div class="sidebar-link-icon">👥</div>
+                <span class="label">Customers</span>
+              </div>
+
+              <div class="sidebar-section-label">System</div>
+              <div class="sidebar-link">
+                <div class="sidebar-link-icon">⚙️</div>
+                <span class="label">Settings</span>
+              </div>
+              <div class="sidebar-link">
+                <div class="sidebar-link-icon">📦</div>
+                <span class="label">Inventory</span>
+              </div>
+            </nav>
+
+            <div class="sidebar-footer">
+              Quantum Build Admin
+              <small>Monitor orders, revenue, stock & user activity in one place.</small>
+            </div>
+          </aside> -->
+
+              <!-- MAIN PANEL -->
+              <div class="main">
+                <!-- TOPBAR -->
+                <header class="topbar">
+                  <div class="topbar-inner">
+                    <div class="topbar-left">
+                      <div class="topbar-title-row">
+                        <button class="sidebar-toggle" id="sidebarToggle" title="Toggle menu">
+                          ☰
+                        </button>
+                        <div class="topbar-title">Dashboard</div>
+                      </div>
+                      <div class="topbar-sub">
+                        Today’s summary of <strong>Quantum Build</strong> store performance.
+                      </div>
+                    </div>
+                    <div class="topbar-right">
+                      <div class="topbar-pill">
+                        <span class="topbar-pill-dot"></span>
+                        Live store · Sample data
+                      </div>
+                      <div class="topbar-user">
+                        <div class="topbar-avatar">A</div>
+                        <div class="topbar-user-info">
+                          <div class="topbar-user-name">Admin</div>
+                          <div class="topbar-user-role">Store Manager</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </header>
+
+                <!-- CONTENT -->
+                <main class="content">
+                  <!-- Metrics row -->
+                  <section class="metrics-grid">
+                    <div class="metric-card">
+                      <div class="metric-label">Total Revenue</div>
+                      <div class="metric-value-row">
+                        <div class="metric-value" id="adminRevenue">...</div>
+                        <div class="metric-change">--</div>
+                      </div>
+                      <div class="metric-sub">All time</div>
+                      <div class="metric-icon-badge">₹</div>
+                    </div>
+
+                    <div class="metric-card">
+                      <div class="metric-label">Total Orders</div>
+                      <div class="metric-value-row">
+                        <div class="metric-value" id="adminOrders">...</div>
+                        <div class="metric-change">--</div>
+                      </div>
+                      <div class="metric-sub">All time</div>
+                      <div class="metric-icon-badge">🧾</div>
+                    </div>
+
+                    <div class="metric-card">
+                      <div class="metric-label">Active customers</div>
+                      <div class="metric-value-row">
+                        <div class="metric-value" id="adminCustomers">...</div>
+                        <div class="metric-change">--</div>
+                      </div>
+                      <div class="metric-sub">Registered Users</div>
+                      <div class="metric-icon-badge">👥</div>
+                    </div>
+
+                    <div class="metric-card">
+                      <div class="metric-label">Low stock items</div>
+                      <div class="metric-value-row">
+                        <div class="metric-value" id="adminLowStock">...</div>
+                        <div class="metric-change down">--</div>
+                      </div>
+                      <div class="metric-sub">below configured safety stock</div>
+                      <div class="metric-icon-badge">⚠️</div>
+                    </div>
+                  </section>
+
+                  <!-- Charts + Orders -->
+                  <section class="grid-two">
+                    <!-- Chart card -->
+                    <div class="card">
+                      <div class="card-header">
+                        <div>
+                          <div class="card-title">Sales by category · This week</div>
+                          <div class="card-sub">CPU / GPU / RAM / Storage / Peripherals</div>
+                        </div>
+                        <div class="card-tag">Sample data</div>
+                      </div>
+                      <div class="chart">
+                        <div class="chart-legend">
+                          <div class="chart-legend-item">
+                            <span class="legend-dot"></span> Revenue
+                          </div>
+                          <div class="chart-legend-item">
+                            <span class="legend-dot secondary"></span> Orders
+                          </div>
+                        </div>
+                        <div class="chart-bars">
+                          <!-- CPU -->
+                          <div class="chart-bar" style="height: 75%;">
+                            <div class="chart-bar-inner"></div>
+                            <div class="chart-bar-value">₹24k</div>
+                          </div>
+                          <!-- GPU -->
+                          <div class="chart-bar" style="height: 90%;">
+                            <div class="chart-bar-inner"></div>
+                            <div class="chart-bar-value">₹31k</div>
+                          </div>
+                          <!-- RAM -->
+                          <div class="chart-bar dark" style="height: 50%;">
+                            <div class="chart-bar-inner"></div>
+                            <div class="chart-bar-value">₹14k</div>
+                          </div>
+                          <!-- Storage -->
+                          <div class="chart-bar" style="height: 60%;">
+                            <div class="chart-bar-inner"></div>
+                            <div class="chart-bar-value">₹18k</div>
+                          </div>
+                          <!-- Peripherals -->
+                          <div class="chart-bar dark" style="height: 40%;">
+                            <div class="chart-bar-inner"></div>
+                            <div class="chart-bar-value">₹10k</div>
+                          </div>
+                        </div>
+                        <div
+                          style="display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:var(--muted);">
+                          <span>CPU</span><span>GPU</span><span>RAM</span><span>Storage</span><span>Peripherals</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Orders table -->
+                    <div class="card">
+                      <div class="card-header">
+                        <div>
+                          <div class="card-title">Recent orders</div>
+                          <div class="card-sub">Last 7 orders placed on the store</div>
+                        </div>
+                        <div class="card-tag">Live feed</div>
+                      </div>
+                      <div class="table-wrapper">
+                        <table>
+                          <thead>
+                            <tr>
+                              <th>Order ID</th>
+                              <th>Customer</th>
+                              <th>Items</th>
+                              <th>Total</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody id="ordersTableBody">
+                            <tr>
+                              <td>#QB-1024</td>
+                              <td>Rohan Sharma</td>
+                              <td>CPU, GPU, RAM</td>
+                              <td>₹58,499</td>
+                              <td><span class="status-pill completed">● Completed</span></td>
+                            </tr>
+                            <tr>
+                              <td>#QB-1025</td>
+                              <td>Priya Verma</td>
+                              <td>Monitor, Headset</td>
+                              <td>₹15,299</td>
+                              <td><span class="status-pill pending">● Pending</span></td>
+                            </tr>
+                            <tr>
+                              <td>#QB-1026</td>
+                              <td>Aditya Joshi</td>
+                              <td>RTX 4060, PSU</td>
+                              <td>₹39,999</td>
+                              <td><span class="status-pill completed">● Completed</span></td>
+                            </tr>
+                            <tr>
+                              <td>#QB-1027</td>
+                              <td>Neha Kulkarni</td>
+                              <td>Wi-Fi card, SSD</td>
+                              <td>₹8,799</td>
+                              <td><span class="status-pill completed">● Completed</span></td>
+                            </tr>
+                            <tr>
+                              <td>#QB-1028</td>
+                              <td>Manish Jain</td>
+                              <td>Cabinet, Fans, AIO</td>
+                              <td>₹14,299</td>
+                              <td><span class="status-pill pending">● Pending</span></td>
+                            </tr>
+                            <tr>
+                              <td>#QB-1029</td>
+                              <td>Simran Kaur</td>
+                              <td>Keyboard, Mouse</td>
+                              <td>₹4,298</td>
+                              <td><span class="status-pill completed">● Completed</span></td>
+                            </tr>
+                            <tr>
+                              <td>#QB-1030</td>
+                              <td>Rahul Mehta</td>
+                              <td>UPS 1100VA</td>
+                              <td>₹5,499</td>
+                              <td><span class="status-pill failed">● Failed</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </section>
+
+                  <!-- Inventory section -->
+                  <section class="card">
+                    <div class="card-header">
+                      <div>
+                        <div class="card-title">Inventory status</div>
+                        <div class="card-sub">Key SKUs from your Quantum Build store</div>
+                      </div>
+                      <div class="card-tag">Low stock alerts</div>
+                    </div>
+
+                    <div class="inventory-list" id="inventoryList">
+                      <div class="inventory-item">
+                        <div class="inventory-main">
+                          <div class="inventory-name">Intel Core i5 12400F</div>
+                          <div class="inventory-meta">Category: CPU · Min. safety stock: 15</div>
+                        </div>
+                        <div style="text-align:right;">
+                          <div class="inventory-stock medium">Stock: 18 pcs</div>
+                          <div class="inventory-badge">Monitor closely</div>
+                        </div>
+                      </div>
+
+                      <div class="inventory-item">
+                        <div class="inventory-main">
+                          <div class="inventory-name">NVIDIA GeForce RTX 4060 8GB</div>
+                          <div class="inventory-meta">Category: GPU · Min. safety stock: 10</div>
+                        </div>
+                        <div style="text-align:right;">
+                          <div class="inventory-stock low">Stock: 6 pcs</div>
+                          <div class="inventory-badge">Low stock – reorder</div>
+                        </div>
+                      </div>
+
+                      <div class="inventory-item">
+                        <div class="inventory-main">
+                          <div class="inventory-name">16GB DDR4 3200MHz RAM Kit</div>
+                          <div class="inventory-meta">Category: RAM · Min. safety stock: 25</div>
+                        </div>
+                        <div style="text-align:right;">
+                          <div class="inventory-stock ok">Stock: 42 pcs</div>
+                          <div class="inventory-badge">Healthy</div>
+                        </div>
+                      </div>
+
+                      <div class="inventory-item">
+                        <div class="inventory-main">
+                          <div class="inventory-name">1TB NVMe M.2 SSD</div>
+                          <div class="inventory-meta">Category: Storage · Min. safety stock: 30</div>
+                        </div>
+                        <div style="text-align:right;">
+                          <div class="inventory-stock medium">Stock: 28 pcs</div>
+                          <div class="inventory-badge">Approaching limit</div>
+                        </div>
+                      </div>
+
+                      <div class="inventory-item">
+                        <div class="inventory-main">
+                          <div class="inventory-name">ATX Mid Tower Gaming Cabinet</div>
+                          <div class="inventory-meta">Category: Cabinet · Min. safety stock: 8</div>
+                        </div>
+                        <div style="text-align:right;">
+                          <div class="inventory-stock ok">Stock: 13 pcs</div>
+                          <div class="inventory-badge">Okay</div>
+                        </div>
+                      </div>
+
+                      <div class="inventory-item">
+                        <div class="inventory-main">
+                          <div class="inventory-name">600VA Line-Interactive UPS</div>
+                          <div class="inventory-meta">Category: UPS · Min. safety stock: 12</div>
+                        </div>
+                        <div style="text-align:right;">
+                          <div class="inventory-stock low">Stock: 5 pcs</div>
+                          <div class="inventory-badge">Critical – reorder now</div>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </main>
+
+                <footer class="admin-footer">
+                  Quantum Build Admin · This is a front-end demo. Connect to a real backend / database
+                  (like Firebase, Node.js, or any REST API) to load live orders, products & inventory.
+                </footer>
+              </div>
+            </div>
+
+            <script>
+              const API_BASE_URL = "http://localhost:3000";
+
+              document.addEventListener("DOMContentLoaded", function () {
+                // Sidebar Toggle
+                const sidebar = document.getElementById("sidebar");
+                const toggle = document.getElementById("sidebarToggle");
+                if (toggle && sidebar) {
+                  toggle.addEventListener("click", () => sidebar.classList.toggle("open"));
+                }
+
+                // Fetch Admin Stats
+                fetchStats();
+              });
+
+              async function fetchStats() {
+                try {
+                  const res = await fetch(`${API_BASE_URL}/api/admin/stats`);
+                  if (!res.ok) throw new Error("Failed to fetch stats");
+                  const data = await res.json();
+
+                  // Update Metrics
+                  const revEl = document.getElementById("adminRevenue");
+                  if (revEl) revEl.textContent = "₹" + data.totalRevenue.toLocaleString("en-IN");
+
+                  const ordEl = document.getElementById("adminOrders");
+                  if (ordEl) ordEl.textContent = data.totalOrders;
+
+                  const custEl = document.getElementById("adminCustomers");
+                  if (custEl) custEl.textContent = data.activeCustomers;
+
+                  const lowStockEl = document.getElementById("adminLowStock");
+                  if (lowStockEl) lowStockEl.textContent = data.inventory.filter(i => i.stock < 10).length;
+
+                  // Update Orders Table
+                  const tbody = document.getElementById("ordersTableBody");
+                  if (tbody) {
+                    tbody.innerHTML = "";
+                    data.recentOrders.forEach(order => {
+                      const tr = document.createElement("tr");
+                      tr.innerHTML = `
+                    <td>#${order.id}</td>
+                    <td>${order.user ? order.user.name : 'Guest'}</td>
+                    <td>${order.items ? order.items.length : 0} items</td>
+                    <td>₹${(order.total || 0).toLocaleString("en-IN")}</td>
+                    <td><span class="status-pill ${order.status ? order.status.toLowerCase() : 'pending'}">● ${order.status || 'Pending'}</span></td>
+                  `;
+                      tbody.appendChild(tr);
+                    });
+                  }
+
+                  // Update Inventory List
+                  const invList = document.getElementById("inventoryList");
+                  if (invList) {
+                    invList.innerHTML = "";
+                    data.inventory.forEach(item => {
+                      const stockClass = item.stock < 5 ? "low" : (item.stock < 10 ? "medium" : "ok");
+                      const badgeText = item.stock < 5 ? "Critical" : (item.stock < 10 ? "Low" : "Healthy");
+
+                      const div = document.createElement("div");
+                      div.className = "inventory-item";
+                      div.innerHTML = `
+                    <div class="inventory-main">
+                      <div class="inventory-name">${item.name}</div>
+                      <div class="inventory-meta">Category: ${item.category}</div>
+                    </div>
+                    <div style="text-align:right;">
+                      <div class="inventory-stock ${stockClass}">Stock: ${item.stock} pcs</div>
+                      <div class="inventory-badge">${badgeText}</div>
+                    </div>
+                  `;
+                      invList.appendChild(div);
+                    });
+                  }
+
+                } catch (err) {
+                  console.error("Error loading admin stats:", err);
+                }
+              }
+            </script>
+
+</body>
+
+</html>
