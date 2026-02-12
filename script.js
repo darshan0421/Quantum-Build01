@@ -1,7 +1,8 @@
 // Quantum Build front-end logic
 document.addEventListener("DOMContentLoaded", function () {
   const CART_KEY = "quantumBuildCart";
-  let products = [];
+  // Check if products are already loaded from products.js
+  let products = window.products || [];
 
   const API_BASE_URL = "";
 
@@ -55,16 +56,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- API Fetch ---------- */
   async function fetchProducts() {
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/products`);
-      if (!res.ok) throw new Error("Failed to fetch products");
-      products = await res.json();
+    // If we already have products from products.js, render them immediately
+    if (products.length > 0) {
       renderProducts();
-    } catch (err) {
-      console.error(err);
-      if (productList) {
-        productList.innerHTML = "<p>Failed to load products. Please check backend.</p>";
+    }
+
+    try {
+      // Attempt to fetch from API if URL is configured
+      if (API_BASE_URL) {
+        const res = await fetch(`${API_BASE_URL}/api/products`);
+        if (res.ok) {
+          products = await res.json();
+          renderProducts();
+        }
       }
+    } catch (err) {
+      console.warn("API fetch failed, using local data if available.", err);
+      // Fallback is already handled by initial check
+    }
+
+    if (products.length === 0 && productList) {
+      productList.innerHTML = "<p>No products found.</p>";
     }
   }
 

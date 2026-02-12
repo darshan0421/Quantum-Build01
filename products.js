@@ -1,4 +1,4 @@
-const products = [
+window.products = [
     // CPUs
     {
         id: "cpu-1",
