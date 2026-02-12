@@ -339,8 +339,59 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
       } catch (err) {
-        console.error(err);
-        alert("Failed to generate build. Please try again.");
+        console.warn("AI API failed, falling back to local logic.", err);
+
+        // Local Fallback Logic
+        let ratios = { cpu: 0.25, gpu: 0.35, motherboard: 0.12, ram: 0.08, storage: 0.08, psu: 0.08, cabinet: 0.06 };
+        if (usage === 'gaming') { ratios.gpu = 0.40; ratios.cpu = 0.20; }
+        else if (usage === 'editing') { ratios.cpu = 0.35; ratios.gpu = 0.25; ratios.ram = 0.12; }
+        else if (usage === 'office') { ratios.cpu = 0.40; ratios.gpu = 0.10; }
+
+        const findBest = (cat, maxPrice) => {
+          return products
+            .filter(p => p.category === cat && p.price <= maxPrice)
+            .sort((a, b) => b.price - a.price)[0];
+        };
+
+        const suggested = [];
+        const cats = ['cpu', 'gpu', 'motherboard', 'ram', 'storage', 'psu', 'cabinet'];
+
+        cats.forEach(cat => {
+          const item = findBest(cat, budget * ratios[cat]);
+          if (item) suggested.push(item);
+        });
+
+        const total = suggested.reduce((sum, item) => sum + item.price, 0);
+
+        // Render Local Results
+        aiBuildList.innerHTML = "";
+
+        if (suggested.length < 3) {
+          aiBuildList.innerHTML = "<p>Budget too low for a complete build. Try increasing it.</p>";
+          aiTotalCost.textContent = "₹0";
+          addAllToCartBtn.style.display = "none";
+          aiResults.style.display = "block";
+          return;
+        }
+
+        suggested.forEach(p => {
+          const item = document.createElement("div");
+          item.className = "ai-build-item";
+          item.innerHTML = `
+               <span><strong>${p.category.toUpperCase()}</strong>: ${p.name}</span>
+               <span>₹${p.price.toLocaleString("en-IN")}</span>
+             `;
+          aiBuildList.appendChild(item);
+        });
+
+        aiTotalCost.textContent = `₹${total.toLocaleString("en-IN")}`;
+        addAllToCartBtn.style.display = "block";
+        aiResults.style.display = "block";
+
+        addAllToCartBtn.onclick = () => {
+          suggested.forEach(p => addToCart(p));
+          alert("All suggested parts added to cart!");
+        };
       }
     });
   }
