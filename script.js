@@ -54,6 +54,33 @@ document.addEventListener("DOMContentLoaded", function () {
   let currentSearch = "";
   let currentAiUsage = "gaming";
 
+  // Category icon map for placeholder SVG
+  const categoryIcons = {
+    cpu: '⚡', gpu: '🎮', motherboard: '🔧', ram: '💾',
+    storage: '💿', psu: '🔌', cabinet: '🖥️', cooling: '❄️', peripheral: '🖥️'
+  };
+
+  function getPlaceholderSVG(name, category) {
+    const icon = categoryIcons[category] || '📦';
+    const shortName = name.length > 25 ? name.substring(0, 22) + '...' : name;
+    const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='400' height='300' viewBox='0 0 400 300'>
+      <defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'>
+        <stop offset='0%' style='stop-color:%231a1a2e'/>
+        <stop offset='100%' style='stop-color:%2316213e'/>
+      </linearGradient></defs>
+      <rect width='400' height='300' fill='url(%23g)' rx='12'/>
+      <text x='200' y='130' text-anchor='middle' font-size='60'>${icon}</text>
+      <text x='200' y='180' text-anchor='middle' font-family='Arial,sans-serif' font-size='14' fill='%23aaa'>${shortName.replace(/&/g, '&amp;').replace(/'/g, '&apos;')}</text>
+      <text x='200' y='210' text-anchor='middle' font-family='Arial,sans-serif' font-size='11' fill='%23666'>Image coming soon</text>
+    </svg>`;
+    return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+  }
+
+  function handleImageError(img, name, category) {
+    img.onerror = null; // prevent loop
+    img.src = getPlaceholderSVG(name, category);
+  }
+
   /* ---------- API Fetch ---------- */
   async function fetchProducts() {
     // If we already have products from products.js, render them immediately
@@ -172,6 +199,12 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
       `;
 
+      // Handle missing images with placeholder
+      const img = card.querySelector(".product-image");
+      img.addEventListener("error", function () {
+        handleImageError(this, p.name, p.category);
+      });
+
       // Card click -> Open Modal
       card.addEventListener("click", (e) => {
         if (!e.target.closest(".add-btn")) {
@@ -194,6 +227,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function openModal(product) {
     if (!modalBackdrop) return;
+    modalImage.onerror = function () { handleImageError(this, product.name, product.category); };
     modalImage.src = product.image;
     modalBadge.textContent = product.badge;
     modalTitle.textContent = product.name;
